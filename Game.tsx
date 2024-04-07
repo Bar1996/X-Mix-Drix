@@ -93,6 +93,7 @@ const TicTacToeBoard: React.FC = () => {
 
   return (
     <View style={gameStyles.gameContainer}>
+      <Text style={{fontSize: 30, marginBottom: 20}}>Tic Tac Toe</Text>
       <View style={gameStyles.gameBoard}>
         {boardState.cells.map((cell, index) => (
           <Cell
@@ -117,7 +118,7 @@ const Cell: React.FC<{ marker: Marker; onPress: () => void; disabled: boolean }>
     {marker && (
       <Image
         style={gameStyles.cellImage}
-        source={marker === 'X' ? require('./assets/X-removebg-preview.png') : require('./assets/O-removebg-preview.png')}
+        source={marker === 'X' ? require('./assets/X.png') : require('./assets/O.png')}
       />
     )}
   </TouchableOpacity>
