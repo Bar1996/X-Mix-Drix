@@ -1,20 +1,27 @@
-import React, { useState, useEffect } from 'react';
-import { View, Image, TouchableOpacity, StyleSheet, Alert, Text } from 'react-native';
+import React, { useState, useEffect } from "react";
+import {
+  View,
+  Image,
+  TouchableOpacity,
+  StyleSheet,
+  Alert,
+  Text,
+} from "react-native";
 
-type Marker = 'X' | 'O' | null;
+type Marker = "X" | "O" | null;
 
 interface IBoardState {
   cells: Marker[];
   turnOfX: boolean;
   isGameFinished: boolean;
   gameWinner: Marker;
-  alertShown: boolean; 
+  alertShown: boolean;
 }
 
 const TicTacToeBoard: React.FC = () => {
   const [boardState, setBoardState] = useState<IBoardState>({
     cells: Array(9).fill(null),
-    turnOfX: true, 
+    turnOfX: true,
     isGameFinished: false,
     gameWinner: null,
     alertShown: false,
@@ -24,16 +31,18 @@ const TicTacToeBoard: React.FC = () => {
     if (boardState.isGameFinished) {
       return 'Game over, press "Play Again" to restart';
     }
-    return `Turn: ${boardState.turnOfX ? 'X' : 'O'}`;
+    return `Turn: ${boardState.turnOfX ? "X" : "O"}`;
   };
 
-  const [statusMessage, setStatusMessage] = useState<string>(updateStatusMessage());
+  const [statusMessage, setStatusMessage] = useState<string>(
+    updateStatusMessage()
+  );
 
   const onCellSelection = (cellIdx: number): void => {
     if (boardState.cells[cellIdx] !== null || boardState.isGameFinished) return;
 
     const updatedCells = [...boardState.cells];
-    updatedCells[cellIdx] = boardState.turnOfX ? 'X' : 'O';
+    updatedCells[cellIdx] = boardState.turnOfX ? "X" : "O";
     setBoardState({
       ...boardState,
       cells: updatedCells,
@@ -44,9 +53,14 @@ const TicTacToeBoard: React.FC = () => {
   useEffect(() => {
     const checkForWinner = (): void => {
       const lines = [
-        [0, 1, 2], [3, 4, 5], [6, 7, 8],
-        [0, 3, 6], [1, 4, 7], [2, 5, 8],
-        [0, 4, 8], [2, 4, 6],
+        [0, 1, 2],
+        [3, 4, 5],
+        [6, 7, 8],
+        [0, 3, 6],
+        [1, 4, 7],
+        [2, 5, 8],
+        [0, 4, 8],
+        [2, 4, 6],
       ];
 
       for (let line of lines) {
@@ -62,7 +76,7 @@ const TicTacToeBoard: React.FC = () => {
       }
 
       if (!boardState.cells.includes(null)) {
-        endGame(null); 
+        endGame(null);
       }
     };
     setStatusMessage(updateStatusMessage());
@@ -71,13 +85,15 @@ const TicTacToeBoard: React.FC = () => {
 
   const endGame = (winner: Marker): void => {
     if (!boardState.alertShown) {
-      setBoardState(prevState => ({
+      setBoardState((prevState) => ({
         ...prevState,
         isGameFinished: true,
         gameWinner: winner,
-        alertShown: true, 
+        alertShown: true,
       }));
-      Alert.alert("Game Over", winner ? `Winner: ${winner}` : "It's a tie!", [{ text: 'OK' }]);
+      Alert.alert("Game Over", winner ? `Winner: ${winner}` : "It's a tie!", [
+        { text: "OK" },
+      ]);
     }
   };
 
@@ -87,13 +103,13 @@ const TicTacToeBoard: React.FC = () => {
       turnOfX: true,
       isGameFinished: false,
       gameWinner: null,
-      alertShown: false, 
+      alertShown: false,
     });
   };
 
   return (
     <View style={gameStyles.gameContainer}>
-      <Text style={{fontSize: 30, marginBottom: 20}}>Tic Tac Toe</Text>
+      <Text style={{ fontSize: 30, marginBottom: 20 }}>Tic Tac Toe</Text>
       <View style={gameStyles.gameBoard}>
         {boardState.cells.map((cell, index) => (
           <Cell
@@ -104,31 +120,41 @@ const TicTacToeBoard: React.FC = () => {
           />
         ))}
       </View>
-      <GameStatus message={statusMessage} onPress={resetGame} isGameFinished={boardState.isGameFinished} />
+      <GameStatus
+        message={statusMessage}
+        onPress={resetGame}
+        isGameFinished={boardState.isGameFinished}
+      />
     </View>
   );
 };
 
-const Cell: React.FC<{ marker: Marker; onPress: () => void; disabled: boolean }> = ({
-  marker,
-  onPress,
-  disabled,
-}) => (
-  <TouchableOpacity style={gameStyles.cell} onPress={onPress} disabled={disabled}>
+const Cell: React.FC<{
+  marker: Marker;
+  onPress: () => void;
+  disabled: boolean;
+}> = ({ marker, onPress, disabled }) => (
+  <TouchableOpacity
+    style={gameStyles.cell}
+    onPress={onPress}
+    disabled={disabled}
+  >
     {marker && (
       <Image
         style={gameStyles.cellImage}
-        source={marker === 'X' ? require('./assets/X.png') : require('./assets/O.png')}
+        source={
+          marker === "X" ? require("./assets/X.png") : require("./assets/O.png")
+        }
       />
     )}
   </TouchableOpacity>
 );
 
-const GameStatus: React.FC<{ message: string; onPress: () => void; isGameFinished: boolean }> = ({
-  message,
-  onPress,
-  isGameFinished,
-}) => (
+const GameStatus: React.FC<{
+  message: string;
+  onPress: () => void;
+  isGameFinished: boolean;
+}> = ({ message, onPress, isGameFinished }) => (
   <View style={gameStyles.statusSection}>
     <AlertText message={message} />
     {isGameFinished && <ResetButton onPress={onPress} />}
@@ -148,46 +174,46 @@ const ResetButton: React.FC<{ onPress: () => void }> = ({ onPress }) => (
 const gameStyles = StyleSheet.create({
   gameContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     padding: 20,
   },
   gameBoard: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'center',
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "center",
     marginBottom: 20,
   },
   cell: {
     width: 90,
     height: 90,
     margin: 5,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     borderWidth: 2,
-    borderColor: '#123456',
+    borderColor: "#123456",
   },
   cellImage: {
     width: 60,
     height: 60,
   },
   statusSection: {
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   statusText: {
     fontSize: 20,
-    color: 'blue',
+    color: "blue",
     marginBottom: 15,
   },
   resetButton: {
-    backgroundColor: 'green',
+    backgroundColor: "green",
     padding: 10,
     borderRadius: 5,
   },
   resetButtonText: {
-    color: '#ffffff',
-    fontWeight: '600',
+    color: "#ffffff",
+    fontWeight: "600",
   },
 });
 
